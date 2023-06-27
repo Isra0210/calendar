@@ -101,6 +101,7 @@ button {
 }
 
 .btn-add-event{
+	width: 100%;
 	margin-bottom: 12px;
 }
 
@@ -126,4 +127,14 @@ button {
 
 .row-time {
   display: flex;
+}
+
+.table-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.btn-header-table {
+	min-width: 100px;
 }

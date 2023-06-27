@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { ScheduleComponent } from './features/schedule/schedule.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, ScheduleComponent],
@@ -17,6 +19,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     CommonModule,
     ReactiveFormsModule,
     DragDropModule,
+		ToastrModule.forRoot(),
+		BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

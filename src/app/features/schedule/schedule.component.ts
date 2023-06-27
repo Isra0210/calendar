@@ -5,11 +5,9 @@ import {
   AfterViewInit,
   ViewContainerRef,
   OnDestroy,
-  ElementRef,
 } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { CdkDrag } from '@angular/cdk/drag-drop';
 import {
   AbstractControl,
   FormBuilder,
@@ -18,6 +16,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { parse } from 'date-fns';
+import { ToastrService } from 'ngx-toastr';
+import { ScheduleInterface } from './schedule';
 
 interface CalendarDay {
   number: number;
@@ -31,8 +31,10 @@ interface CalendarDay {
 })
 export class ScheduleComponent implements AfterViewInit, OnDestroy {
   @ViewChild(TemplateRef) _dialogTemplate: TemplateRef<any> | any;
+  private isOpenDialog: boolean = false;
   private _overlayRef: OverlayRef;
   private _portal: TemplatePortal;
+  public events: ScheduleInterface[] = [];
 
   scheduleForm: FormGroup = this.formBuilder.group(
     {
@@ -48,7 +50,7 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
   constructor(
     private _overlay: Overlay,
     private _viewContainerRef: ViewContainerRef,
-    // private toastr: ToastrService,
+    private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute
   ) {
@@ -66,8 +68,8 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     });
     this._overlayRef.backdropClick().subscribe(() => this._overlayRef.detach());
   }
-  currentDate = new Date();
 
+  currentDate = new Date();
   calendar: CalendarDay[][] = [];
   currentYear: number = this.currentDate.getFullYear();
   currentMonth: string = '';
@@ -169,26 +171,47 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  test() {
-    console.log('ihul');
-  }
-
   openDialog() {
-    this._overlayRef = this._overlay.create({
-      positionStrategy: this._overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
-      hasBackdrop: true,
-    });
-    this._overlayRef.attach(
-      new TemplatePortal(this._dialogTemplate, this._viewContainerRef)
-    );
+    if (!this.isOpenDialog) {
+      this._overlayRef = this._overlay.create({
+        positionStrategy: this._overlay
+          .position()
+          .global()
+          .centerHorizontally()
+          .centerVertically(),
+        hasBackdrop: true,
+      });
+      this._overlayRef.attach(
+        new TemplatePortal(this._dialogTemplate, this._viewContainerRef)
+      );
+			this.isOpenDialog = true;
+    }
   }
 
   closeDialog() {
+		this.isOpenDialog = false;
     this._overlayRef.dispose();
+  }
+
+  nextMonth(): void {
+    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+
+    this.generateCalendar(this.currentDate);
+    this.currentMonth = this.currentDate.toLocaleString('default', {
+      month: 'long',
+    });
+    this.currentYear = this.currentDate.getFullYear();
+  }
+
+  previousMonth(): void {
+    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+
+    this.generateCalendar(this.currentDate);
+    this.currentMonth = this.currentDate.toLocaleString('default', {
+      month: 'long',
+    });
+    this.currentYear = this.currentDate.getFullYear();
+    // this.currentDate.setFullYear(this.currentDate.getFullYear() + 1);
   }
 
   private endTimeValidator(control: AbstractControl) {
@@ -204,11 +227,22 @@ export class ScheduleComponent implements AfterViewInit, OnDestroy {
     return null;
   }
 
+  getEventsForDate(date: Date): any[] {
+    const filteredEvents = this.events.filter((event) => {
+      return event.date.toDateString() === date.toDateString();
+    });
+
+    return filteredEvents;
+  }
+
   onSubmit() {
-    if(this.scheduleForm.valid) {
-			console.log(this.scheduleForm.value);
-			this.scheduleForm.reset();
-			this.closeDialog();
-		}
+    if (this.scheduleForm.valid) {
+      this.toastr.success('Successfully saved', '', {
+        positionClass: 'toast-top-right',
+      });
+      console.log(this.scheduleForm.value);
+      this.scheduleForm.reset();
+      this.closeDialog();
+    }
   }
 }

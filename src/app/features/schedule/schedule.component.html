@@ -64,7 +64,13 @@
   <table>
     <thead>
       <tr>
-        <th colspan="7">{{ currentMonth }} {{ currentYear }}</th>
+        <th colspan="7">
+          <div class="table-header">
+						<button class="btn-header-table" (click)="previousMonth()">Previous</button>
+						{{ currentMonth }} {{ currentYear }}
+						<button class="btn-header-table" (click)="nextMonth()">Next</button>
+          </div>
+        </th>
       </tr>
       <tr>
         <th>Sun</th>
@@ -81,7 +87,6 @@
         <td
           *ngFor="let day of week"
           [ngClass]="{ 'other-month': day.otherMonth }"
-          onclick="{test()}"
         >
           {{ day.number }}
         </td>

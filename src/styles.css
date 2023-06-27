@@ -9,3 +9,20 @@ html{
 	margin-left: auto;
 	margin-right: auto;
 }
+
+.toast-success {
+  background-color: #4caf50;
+	height: 60px;
+	align-items: center;
+	width: 220px;
+	justify-content: center;
+	position: absolute;
+	margin-top: 40px;
+	margin-right: 20px;
+  color: #fff;
+	display: flex;
+	top: 0;
+	bottom: auto;
+  right: 0;
+  left: auto;
+}
