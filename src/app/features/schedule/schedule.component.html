@@ -1,0 +1,91 @@
+<div class="container">
+  <button class="btn-add-event" (click)="openDialog()">Add event</button>
+
+  <ng-template>
+    <div class="overlay">
+      <div
+        class="example-dialog-content form-body"
+        cdkDrag
+        cdkDragRootElement=".cdk-overlay-pane"
+      >
+        <h1>New event</h1>
+
+        <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
+          <div class="row-title-date">
+            <input
+              type="text"
+              class="title"
+              placeholder="Title..."
+              formControlName="title"
+            />
+
+            <input type="date" class="input-date" formControlName="date" />
+          </div>
+
+          <div class="row-time">
+            <div class="init-time">
+              <label class="form-label">Init time</label>
+              <input type="time" class="init" formControlName="initTime" />
+            </div>
+            <div class="end-time">
+              <label class="form-label">End time</label>
+              <input type="time" class="end" formControlName="endTime" />
+              <small
+                class="text-danger"
+                *ngIf="scheduleForm.errors?.['timeError']"
+                >{{scheduleForm.errors?.['timeError']}}</small
+              >
+            </div>
+          </div>
+
+          <textarea
+            class="form-control"
+            rows="6"
+            placeholder="Description..."
+            formControlName="description"
+          ></textarea>
+          <div class="button-row">
+            <button class="btn-close-dialog" (click)="closeDialog()">
+              Back
+            </button>
+            <button
+              type="submit"
+              class="btn-save"
+              [disabled]="scheduleForm.invalid"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan="7">{{ currentMonth }} {{ currentYear }}</th>
+      </tr>
+      <tr>
+        <th>Sun</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of calendar">
+        <td
+          *ngFor="let day of week"
+          [ngClass]="{ 'other-month': day.otherMonth }"
+          onclick="{test()}"
+        >
+          {{ day.number }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
